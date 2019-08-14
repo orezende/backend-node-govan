@@ -15,6 +15,9 @@ module.exports = {
     async store(req, res) {
         const { currentUser } = req.body;
 
+        console.log(currentUser);
+        return res.json(currentUser);
+
         const userExists = await User.findOne({ user: currentUser });
 
         if(userExists){

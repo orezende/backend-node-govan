@@ -13,7 +13,7 @@ routes.put('/driver', DriverController.update);
 
 //USERS
 routes.get('/user', DriverController.index);
-routes.post('user', DriverController.store);
+routes.post('/user', DriverController.store);
 routes.put('/user', UserController.update);
 
 module.exports = routes;

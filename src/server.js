@@ -8,9 +8,8 @@ const routes = require('./routes');
 
 mongoose.connect('mongodb://localhost:27017/govan', {useNewUrlParser: true});
 
-server.use(cors);
+server.use(cors());
 server.use(express.json());
-
 server.use(routes);
 
 server.listen(3333);

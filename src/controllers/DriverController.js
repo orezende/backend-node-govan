@@ -13,9 +13,10 @@ module.exports = {
     },
 
     async store(req, res) {
-        const { currentDriver } = req.body;
 
-        const driverExists = await Driver.findOne({ driver: currentDriver });
+        const currentDriver  = req.body;
+
+        const driverExists = await Driver.findOne({ cpf: currentDriver.cpf });
 
         if (driverExists) {
             return res.json({
@@ -38,9 +39,9 @@ module.exports = {
         });
     },
     async update(req, res) {
-        const { driverUpdated } = req.body;
+        const driverUpdated  = req.body;
 
-        const driverToUpdate = await Driver.findById(driverUpdated._id);
+        const driverToUpdate = await Driver.findOne({cpf: driverUpdated.cpf});
 
         const driverUpdated = await Driver.updateOne(driverToUpdate, driverUpdated);
 
