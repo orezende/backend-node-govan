@@ -6,7 +6,7 @@ const server = express();
 
 const routes = require('./routes');
 
-mongoose.connect('mongodb://localhost:27017/govan');
+mongoose.connect('mongodb://localhost:27017/govan', {useNewUrlParser: true});
 
 server.use(cors);
 server.use(express.json());

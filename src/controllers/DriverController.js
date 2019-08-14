@@ -17,7 +17,7 @@ module.exports = {
 
         const driverExists = await Driver.findOne({ driver: currentDriver });
 
-        if(driverExists){
+        if (driverExists) {
             return res.json({
                 error: "Motorista ja cadastrado"
             });
@@ -26,15 +26,33 @@ module.exports = {
         const createdDriver = await Driver.create({
             name: currentDriver.name,
             email: currentDriver.email,
-            cpf: currentDriver.cpf, 
+            cpf: currentDriver.cpf,
             phoneNumber: currentDriver.phoneNumber,
             birthDay: currentDriver.birthDay,
-            avatar : currentDriver.avatar,
+            avatar: currentDriver.avatar,
         });
 
         return res.json({
-            message: "Usuario Criado com sucesso!",
-            driver: createdDriver            
+            message: "Motorista criado com sucesso!",
+            driver: createdDriver
+        });
+    },
+    async update(req, res) {
+        const { driverUpdated } = req.body;
+
+        const driverToUpdate = await Driver.findById(driverUpdated._id);
+
+        const driverUpdated = await Driver.updateOne(driverToUpdate, driverUpdated);
+
+        if (!driverUpdated) {
+            return res.json({
+                error: "Motorista não encontrado"
+            });
+        }
+
+        return res.json({
+            message: "Motorista atualizado com sucesso!",
+            driver: driverUpdated
         });
     }
 }

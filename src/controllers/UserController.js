@@ -36,5 +36,23 @@ module.exports = {
             message: "Usuario Criado com sucesso!",
             user: createdUser            
         });
+    },
+    async update(req, res) {
+        const { userUpdated } = req.body;
+
+        const userToUpdate = await user.findById(userUpdated._id);
+
+        const userUpdated = await user.updateOne(userToUpdate, userUpdated);
+
+        if (!userUpdated) {
+            return res.json({
+                error: "Usuário não encontrado"
+            });
+        }
+
+        return res.json({
+            message: "Usuário atualizado com sucesso!",
+            user: userUpdated
+        });
     }
 }
