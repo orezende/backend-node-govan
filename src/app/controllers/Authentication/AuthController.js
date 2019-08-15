@@ -1,9 +1,9 @@
 const axios = require('axios');
-const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const authConfig = require('../../config/auth');
+const User = require('../../models/User');
+const authConfig = require('../../../config/auth');
 
 module.exports = {
   async store(req, res) {

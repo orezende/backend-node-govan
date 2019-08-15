@@ -1,9 +1,9 @@
-const User = require('../models/User');
+const User = require('../../models/User');
 
 module.exports = {
   async index(req, res) {
     const userLogged = await User.findOne({ _id: req.id });
-    userLogged.password = undefined; 
+    userLogged.password = undefined;
     return res.send(userLogged);
   }
 };

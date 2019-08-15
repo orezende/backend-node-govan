@@ -1,8 +1,7 @@
-const User = require('../models/User');
 const crypto = require('crypto');
 
-const mailer = require('../../modules/Mailer');
-
+const User = require('../../models/User');
+const mailer = require('../../../modules/Mailer');
 
 module.exports = {
   async store(req, res) {
