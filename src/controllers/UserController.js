@@ -3,59 +3,70 @@ const User = require('../models/User');
 
 module.exports = {
     async index(req, res) {
-        const { user } = req.headers;
-
-        const currentUser = User.findById(user);
-
         const users = await User.find();
 
         return res.json(users);
     },
-
     async store(req, res) {
-        const { currentUser } = req.body;
+        const currentUser = req.body;
+        const userExists = await User.findOne({ _id: currentUser._id });
 
-        console.log(currentUser);
-        return res.json(currentUser);
-
-        const userExists = await User.findOne({ user: currentUser });
-
-        if(userExists){
+        if (userExists) {
             return res.json({
-                error: "Usuário ja cadastrado"
+                status: false,
+                message: "Usuário já cadastrado"
             });
         }
 
-        const createdUser = await User.create({
-            name: currentUser.name,
-            email: currentUser.email,
-            cpf: currentUser.cpf, 
-            phoneNumber: currentUser.phoneNumber,
-            birthDay: currentUser.birthDay,
-            avatar : currentUser.avatar,
-        });
+        try {
+            const createdUser = await User.create({
+                name: currentUser.name,
+                email: currentUser.email,
+                cpf: currentUser.cpf,
+                phoneNumber: currentUser.phoneNumber,
+                birthDay: currentUser.birthDay,
+                avatar: currentUser.avatar,
+            });
 
-        return res.json({
-            message: "Usuario Criado com sucesso!",
-            user: createdUser            
-        });
+            return res.json({
+                status: true,
+                message: "Usuário cadastrado com sucesso",
+                user: createdUser
+            });
+        } catch{
+            return res.json({
+                status: false,
+                message: "Ops! Houve um erro no cadastro"
+            })
+        }
     },
     async update(req, res) {
-        const { userUpdated } = req.body;
+        const dataToUp = req.body;
 
-        const userToUpdate = await user.findById(userUpdated._id);
+        const currentUserToUp = await User.findOne({ _id: dataToUp._id });
 
-        const userUpdated = await user.updateOne(userToUpdate, userUpdated);
-
-        if (!userUpdated) {
+        if (!currentUserToUp) {
             return res.json({
-                error: "Usuário não encontrado"
-            });
+                status: false,
+                message: "Usuário não encontrado"
+            })
         }
 
-        return res.json({
-            message: "Usuário atualizado com sucesso!",
-            user: userUpdated
-        });
+        try {
+            await User.updateOne({ _id: currentUserToUp._id }, dataToUp);
+
+            const userUpdated = await User.findOne({ _id: dataToUp._id });
+
+            return res.json({
+                status: true,
+                message: "Usuário alterado com sucesso",
+                user: userUpdated
+            });
+        } catch{
+            return res.json({
+                status: false,
+                message: "Ops! Houve um erro na alteração"
+            })
+        }
     }
 }

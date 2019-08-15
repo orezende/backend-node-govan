@@ -3,57 +3,70 @@ const Driver = require('../models/Driver');
 
 module.exports = {
     async index(req, res) {
-        const { driver } = req.headers;
-
-        const currentDriver = Driver.findById(driver);
-
-        const drivers = await Driver.find();
+        const drivers = await driver.find();
 
         return res.json(drivers);
     },
-
     async store(req, res) {
-
-        const currentDriver  = req.body;
-
-        const driverExists = await Driver.findOne({ cpf: currentDriver.cpf });
+        const currentdriver = req.body;
+        const driverExists = await driver.findOne({ _id: currentdriver._id });
 
         if (driverExists) {
             return res.json({
-                error: "Motorista ja cadastrado"
+                status: false,
+                message: "Motorista já cadastrado"
             });
         }
 
-        const createdDriver = await Driver.create({
-            name: currentDriver.name,
-            email: currentDriver.email,
-            cpf: currentDriver.cpf,
-            phoneNumber: currentDriver.phoneNumber,
-            birthDay: currentDriver.birthDay,
-            avatar: currentDriver.avatar,
-        });
+        try {
+            const createddriver = await driver.create({
+                name: currentdriver.name,
+                email: currentdriver.email,
+                cpf: currentdriver.cpf,
+                phoneNumber: currentdriver.phoneNumber,
+                birthDay: currentdriver.birthDay,
+                avatar: currentdriver.avatar,
+            });
 
-        return res.json({
-            message: "Motorista criado com sucesso!",
-            driver: createdDriver
-        });
+            return res.json({
+                status: true,
+                message: "Motorista cadastrado com sucesso",
+                driver: createddriver
+            });
+        } catch{
+            return res.json({
+                status: false,
+                message: "Ops! Houve um erro no cadastro"
+            })
+        }
     },
     async update(req, res) {
-        const driverUpdated  = req.body;
+        const dataToUp = req.body;
 
-        const driverToUpdate = await Driver.findOne({cpf: driverUpdated.cpf});
+        const currentdriverToUp = await driver.findOne({ _id: dataToUp._id });
 
-        const driverUpdated = await Driver.updateOne(driverToUpdate, driverUpdated);
-
-        if (!driverUpdated) {
+        if (!currentdriverToUp) {
             return res.json({
-                error: "Motorista não encontrado"
-            });
+                status: false,
+                message: "Motorista não encontrado"
+            })
         }
 
-        return res.json({
-            message: "Motorista atualizado com sucesso!",
-            driver: driverUpdated
-        });
+        try {
+            await driver.updateOne({ _id: currentdriverToUp._id }, dataToUp);
+
+            const driverUpdated = await driver.findOne({ _id: dataToUp._id });
+
+            return res.json({
+                status: true,
+                message: "Motorista alterado com sucesso",
+                driver: driverUpdated
+            });
+        } catch{
+            return res.json({
+                status: false,
+                message: "Ops! Houve um erro na alteração"
+            })
+        }
     }
 }
