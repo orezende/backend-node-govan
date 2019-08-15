@@ -1,5 +1,7 @@
-const axios = require('axios');
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+
+const authConfig = require('../config/auth');
 
 module.exports = {
     async index(req, res) {
@@ -9,13 +11,10 @@ module.exports = {
     },
     async store(req, res) {
         const currentUser = req.body;
-        const userExists = await User.findOne({ _id: currentUser._id });
+        const userExists = await User.findOne({ email: currentUser.email });
 
         if (userExists) {
-            return res.json({
-                status: false,
-                message: "Usuário já cadastrado"
-            });
+            return res.status(400).send({ error: "Usuário já existente!" })
         }
 
         try {
@@ -26,30 +25,32 @@ module.exports = {
                 phoneNumber: currentUser.phoneNumber,
                 birthDay: currentUser.birthDay,
                 avatar: currentUser.avatar,
+                password: currentUser.password
+            });
+
+            createdUser.password = undefined;
+
+            const token = jwt.sign({ id: createdUser._id }, authConfig.secret, {
+                expiresIn: 86400,
             });
 
             return res.json({
                 status: true,
                 message: "Usuário cadastrado com sucesso",
-                user: createdUser
+                user: createdUser,
+                token
             });
         } catch{
-            return res.json({
-                status: false,
-                message: "Ops! Houve um erro no cadastro"
-            })
+            return res.status(400).send({ error: "Ops! Houve um erro no cadastro!" })
         }
     },
     async update(req, res) {
         const dataToUp = req.body;
 
-        const currentUserToUp = await User.findOne({ _id: dataToUp._id });
+        const currentUserToUp = await User.findOne({ email: dataToUp.email });
 
         if (!currentUserToUp) {
-            return res.json({
-                status: false,
-                message: "Usuário não encontrado"
-            })
+            return res.status(400).send({ error: "Usuário não encontrado!" })
         }
 
         try {
@@ -57,16 +58,15 @@ module.exports = {
 
             const userUpdated = await User.findOne({ _id: dataToUp._id });
 
+            userUpdated.password = undefined;
+
             return res.json({
                 status: true,
                 message: "Usuário alterado com sucesso",
                 user: userUpdated
             });
         } catch{
-            return res.json({
-                status: false,
-                message: "Ops! Houve um erro na alteração"
-            })
+            return res.status(400).send({ error: "Ops! Houve um erro na alteração!" })
         }
     }
 }

@@ -1,4 +1,3 @@
-const axios = require('axios');
 const Driver = require('../models/Driver');
 
 module.exports = {
@@ -9,17 +8,14 @@ module.exports = {
     },
     async store(req, res) {
         const currentdriver = req.body;
-        const driverExists = await driver.findOne({ _id: currentdriver._id });
+        const driverExists = await Driver.findOne({ _id: currentdriver._id });
 
         if (driverExists) {
-            return res.json({
-                status: false,
-                message: "Motorista já cadastrado"
-            });
+            return res.status(400).send({error: "Mototrista ja cadastrado!"})
         }
 
         try {
-            const createddriver = await driver.create({
+            const createddriver = await Driver.create({
                 name: currentdriver.name,
                 email: currentdriver.email,
                 cpf: currentdriver.cpf,
@@ -34,28 +30,22 @@ module.exports = {
                 driver: createddriver
             });
         } catch{
-            return res.json({
-                status: false,
-                message: "Ops! Houve um erro no cadastro"
-            })
+            return res.status(400).send({error: "Ops! Houve um erro no cadastro!"})
         }
     },
     async update(req, res) {
         const dataToUp = req.body;
 
-        const currentdriverToUp = await driver.findOne({ _id: dataToUp._id });
+        const currentdriverToUp = await Driver.findOne({ _id: dataToUp._id });
 
         if (!currentdriverToUp) {
-            return res.json({
-                status: false,
-                message: "Motorista não encontrado"
-            })
+            return res.status(400).send({error: "Mototrista não encontrado!"})
         }
 
         try {
             await driver.updateOne({ _id: currentdriverToUp._id }, dataToUp);
 
-            const driverUpdated = await driver.findOne({ _id: dataToUp._id });
+            const driverUpdated = await Driver.findOne({ _id: dataToUp._id });
 
             return res.json({
                 status: true,
@@ -63,10 +53,7 @@ module.exports = {
                 driver: driverUpdated
             });
         } catch{
-            return res.json({
-                status: false,
-                message: "Ops! Houve um erro na alteração"
-            })
+            return res.status(400).send({error: "Ops! Houve um erro na alteração!"})
         }
     }
 }
