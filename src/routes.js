@@ -10,9 +10,11 @@ const ResetPasswordController = require('./app/controllers/ResetPassword/ResetPa
 const ForgotPasswordController = require('./app/controllers/ResetPassword/ForgotPassowrdController');
 
 const routes = express.Router();
-//AUTH USING MIDDLEWARE  
+//VERIFY AUTH USING MIDDLEWARE  
 routes.use('/index', authMiddleware);
 routes.get('/index', ProjectController.index);
+
+//AUTH USER 
 routes.post('/auth/user', AuthController.store);
 
 //RESET PASSWORD
@@ -23,8 +25,6 @@ routes.post('/reset_password', ResetPasswordController.store);
 routes.get('/list/user', UserController.index);
 routes.post('/register/user', UserController.store);
 routes.put('/change/user', UserController.update);
-
-
 
 
 module.exports = routes;
