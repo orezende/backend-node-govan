@@ -1,4 +1,8 @@
 const express = require('express');
+const routes = express.Router();
+
+
+//CONTROLLERS IMPORTATIONS
 
 const UserController = require('./app/controllers/User/UserController');
 
@@ -9,7 +13,8 @@ const authMiddleware = require('./app/middlewares/auth');
 const ResetPasswordController = require('./app/controllers/ResetPassword/ResetPasswordController');
 const ForgotPasswordController = require('./app/controllers/ResetPassword/ForgotPassowrdController');
 
-const routes = express.Router();
+
+
 //VERIFY AUTH USING MIDDLEWARE  
 routes.use('/index', authMiddleware);
 routes.get('/index', ProjectController.index);
