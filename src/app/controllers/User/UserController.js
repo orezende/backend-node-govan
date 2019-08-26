@@ -11,7 +11,7 @@ module.exports = {
     },
     async store(req, res) {
         const currentUser = req.body;
-        const userExists = await User.findOne({ email: currentUser.email });
+        const userExists = await User.findOne({ phoneNumber: currentUser.phoneNumber });
 
         if (userExists) {
             return res.status(400).send({ error: "Usuário já existente!" })
@@ -19,12 +19,8 @@ module.exports = {
 
         try {
             const createdUser = await User.create({
-                name: currentUser.name,
                 email: currentUser.email,
-                cpf: currentUser.cpf,
                 phoneNumber: currentUser.phoneNumber,
-                birthDay: currentUser.birthDay,
-                avatar: currentUser.avatar,
                 password: currentUser.password
             });
 
@@ -40,14 +36,14 @@ module.exports = {
                 user: createdUser,
                 token
             });
-        } catch{
+        } catch(err){
             return res.status(400).send({ error: "Ops! Houve um erro no cadastro!" })
         }
     },
     async update(req, res) {
         const dataToUp = req.body;
 
-        const currentUserToUp = await User.findOne({ email: dataToUp.email });
+        const currentUserToUp = await User.findOne({ phoneNumber: dataToUp.phoneNumber });
 
         if (!currentUserToUp) {
             return res.status(400).send({ error: "Usuário não encontrado!" })
@@ -66,7 +62,7 @@ module.exports = {
                 user: userUpdated
             });
         } catch{
-            return res.status(400).send({ error: "Ops! Houve um erro na alteração!" })
+            return res.status(400).send({ error: "Ops! Houve um erro na requisição!" })
         }
     }
 }

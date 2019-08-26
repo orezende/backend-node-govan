@@ -8,8 +8,8 @@ const authConfig = require('../../../config/auth');
 module.exports = {
   async store(req, res) {
 
-    const { email, password } = req.body;
-    const user = await User.findOne({ email }).select('+password');
+    const { phoneNumber, password } = req.body;
+    const user = await User.findOne({ phoneNumber }).select('+password');
 
     if (!user)
       return res.status(400).send({ error: 'Usuário não encontrado' });
@@ -22,7 +22,6 @@ module.exports = {
     const token = jwt.sign({ id: user._id }, authConfig.secret, {
       expiresIn: 86400,
     });
-
-    res.json({ user, token });
+    return res.json({ user, token });
   }
 }
