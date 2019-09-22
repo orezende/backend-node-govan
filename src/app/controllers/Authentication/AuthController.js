@@ -11,6 +11,8 @@ module.exports = {
     const { phoneNumber, password } = req.body;
     const user = await User.findOne({ phoneNumber }).select('+password');
 
+    
+
     if (!user)
       return res.status(400).send({ error: 'Usuário não encontrado' });
 
@@ -20,7 +22,7 @@ module.exports = {
     user.password = undefined;
 
     const token = jwt.sign({ id: user._id }, authConfig.secret, {
-      expiresIn: 86400,
+      expiresIn: 1,
     });
     return res.json({ user, token });
   }

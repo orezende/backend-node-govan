@@ -18,11 +18,11 @@ module.exports = (req, res, next) => {
     return res.status(401).send({ error: 'Token mal formatado' });
 
   jwt.verify(token, authConfig.secret, (err, decoded) => {
-    if (!err)
+    if (err) {
       return res.status(401).send({ error: 'Token inválido' });
+    }
 
     req.id = decoded.id;
-    console.log("OLOQUINHO MEO --- "  + token);
     return next();
   });
 };
